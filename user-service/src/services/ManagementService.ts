@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/UserRepository";
-import { NotFoundError } from "../middlewares/errorHandler";
+import { NotFoundError } from "../middleware/errorHandler";
 
 export class ManagementService {
   private userRepository = new UserRepository();
