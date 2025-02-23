@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  user-service:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgres://postgres:password@user-db:5432/users
+    depends_on:
+      - user-db
+    command: npm run dev
+
+  user-db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    ports:
+      - "5433:5432"
+    volumes:
+      - user_data:/var/lib/postgresql/data
+
+volumes:
+  user_data:
