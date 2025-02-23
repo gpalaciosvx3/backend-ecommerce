@@ -16,6 +16,9 @@ COPY . .
 # Compilar TypeScript
 RUN npm run build
 
+# Generar prisma orm
+RUN npx prisma generate
+
 # Exponer el puerto del servidor
 EXPOSE 4000
 
