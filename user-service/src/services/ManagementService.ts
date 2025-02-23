@@ -3,7 +3,10 @@ import { NotFoundError } from "../middleware/errorHandler";
 
 export class ManagementService {
   private userRepository = new UserRepository();
-
+  
+  /* 
+  * Desactiva usuario
+  */
   async deactivateUser(email: string) {
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new NotFoundError("Usuario no encontrado");

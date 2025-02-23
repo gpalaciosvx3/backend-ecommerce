@@ -4,6 +4,9 @@ import { AppError } from "../middleware/errorHandler";
 export class AuthService {
   private userRepository = new UserRepository();
 
+  /* 
+  * Registra usuario
+  */
   async registerUser(name: string, email: string, password: string) {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
