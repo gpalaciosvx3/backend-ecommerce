@@ -11,6 +11,17 @@ export class UserRepository {
   }
 
   /**
+   * Obtener usuario
+   * @param username | undefined - Nombre del usuario
+   * @returns Lista de usuarios
+   */
+  async findUser(username?: string): Promise<User | null> {
+    return prisma.user.findUnique({
+      where: { username }
+    });
+  }
+
+  /**
    * Buscar un usuario por su email
    * @param email - Email del usuario
    * @returns Usuario encontrado o null si no existe

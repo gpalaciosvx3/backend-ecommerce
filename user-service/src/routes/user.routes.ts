@@ -8,6 +8,7 @@ const userController = new UserController();
 router.post("/register", userController.createUser);
 
 // Rutas de Perfil
+router.get("/", userController.getUser);
 router.get("/profile/:email", userController.getProfile);
 
 // Rutas de Administración

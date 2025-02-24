@@ -5,7 +5,7 @@ export class UserController {
   private userService = new UserService();
  
   /* 
-  * Crea usuario
+  * AUTH => Autentificación
   */
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -18,8 +18,18 @@ export class UserController {
   }
 
   /* 
-  * Obtiene perfil de Usuario
+  * PROF => Obtiene usuarios
   */
+  getUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { username } = req.query;
+      const profile = await this.userService.profileService.getUserQuery(username as string | undefined);
+    } catch (error) {
+      next(error);
+    }
+  
+  }
+
   getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email } = req.params;
@@ -31,7 +41,7 @@ export class UserController {
   }
   
   /* 
-  * Desactiva Usuario
+  * MANG => Desactiva Usuario
   */
   deactivateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -42,4 +52,5 @@ export class UserController {
       next(error);
     }
   }
+  
 }
