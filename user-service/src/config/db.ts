@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 // Middleware para validar y encriptar datos antes de guardarlos
-prisma.$use(async (params, next) => {
+prisma.$use(async (params: any, next: any) => {
   if (params.model === "User") {
     if (params.action === "create" || params.action === "update") {
       const data = params.args.data;

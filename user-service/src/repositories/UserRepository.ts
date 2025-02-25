@@ -16,10 +16,9 @@ export class UserRepository {
    * @returns Lista de usuarios
    */
   async findUser(username?: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { username }
-    });
+    return prisma.user.findUnique({ where: { username } });
   }
+  
 
   /**
    * Buscar un usuario por su email
@@ -32,14 +31,15 @@ export class UserRepository {
 
   /**
    * Crear un nuevo usuario
-   * @param name - Nombre del usuario
+   * @param name - Nombre de pila del usuario
    * @param email - Email del usuario
    * @param password - Contraseña (debe estar encriptada antes de llamar este método)
+   * @param username - Nombre de usuario
    * @returns Usuario creado
    */
-  async createUser(name: string, email: string, password: string): Promise<User> {
+  async createUser(name: string, email: string, password: string, username: string): Promise<User> {
     return prisma.user.create({
-      data: { name, email, password },
+      data: { name, email, password, username },
     });
   }
 

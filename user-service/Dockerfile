@@ -1,26 +1,29 @@
-# Usar la imagen base de Node.js
+# Usar la imagen base de Node.js con Alpine
 FROM node:20-alpine
 
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos importantes para instalar dependencias
+# Instalar dependencias necesarias para compilar `bcrypt`
+RUN apk add --no-cache python3 make g++ libc6-compat
+
+# Copiar archivos de dependencias antes del código
 COPY package.json package-lock.json ./
 
-# Instalar dependencias
-RUN npm install
+# Instalar dependencias dentro del contenedor
+RUN npm install --force
 
-# Copiar todo el código al contenedor
+# Copiar el resto del código después de instalar dependencias
 COPY . .
 
 # Compilar TypeScript
 RUN npm run build
 
-# Generar prisma orm
+# Generar Prisma ORM
 RUN npx prisma generate
 
 # Exponer el puerto del servidor
 EXPOSE 4000
 
-# Comando para iniciar la aplicación
-CMD ["node", "dist/server.js"]
+# Ejecutar migraciones de Prisma y arrancar la app
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]

@@ -9,8 +9,8 @@ export class UserController {
   */
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password } = req.body;
-      const user = await this.userService.authService.registerUser(name, email, password);
+      const { name, email, password, username } = req.body;
+      const user = await this.userService.authService.registerUser(name, email, password, username);
       res.status(201).json(user);
     } catch (error) {
       next(error);
