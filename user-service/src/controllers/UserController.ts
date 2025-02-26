@@ -24,20 +24,11 @@ export class UserController {
     try {
       const { username } = req.query;
       const profile = await this.userService.profileService.getUserQuery(username as string | undefined);
+      res.status(201).json(profile);
     } catch (error) {
       next(error);
     }
   
-  }
-
-  getProfile = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { email } = req.params;
-      const profile = await this.userService.profileService.getUserProfile(email);
-      res.json(profile);
-    } catch (error) {
-      next(error);
-    }
   }
   
   /* 
@@ -45,8 +36,8 @@ export class UserController {
   */
   deactivateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email } = req.params;
-      const response = await this.userService.managementService.deactivateUser(email);
+      const { username } = req.params;
+      const response = await this.userService.managementService.deactivateUser(username);
       res.json(response);
     } catch (error) {
       next(error);
