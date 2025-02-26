@@ -8,6 +8,10 @@ services:
     depends_on:
       user-db:
         condition: service_healthy
+    volumes:
+      - .:/app  
+      - /app/node_modules  
+      - /app/dist
     command: ["sh", "-c", "npx prisma migrate deploy && npm run start"]
 
   user-db:
