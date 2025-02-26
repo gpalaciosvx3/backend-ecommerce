@@ -10,7 +10,7 @@ export class ProfileService {
   */
   async getUserQuery(username?: string) {
     const user = await this.userRepository.findUser(username);
-    if (!user) throw new NotFoundError("Perfil no encontrado");
+    if (!user || (Array.isArray(user) && user.length === 0)) throw new NotFoundError("Perfil no encontrado");
     return user;
   }
 

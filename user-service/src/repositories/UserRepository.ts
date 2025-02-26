@@ -15,10 +15,13 @@ export class UserRepository {
    * @param username | undefined - Nombre del usuario
    * @returns Lista de usuarios
    */
-  async findUser(username?: string): Promise<User | null> {
-    return username
-      ? prisma.user.findUnique({ where: { username } })
-      : null;
+  async findUser(username?: string): Promise<User | User[] | null> {
+    if (!username) return prisma.user.findMany();
+
+    // Busca un usuario por username
+    return prisma.user.findFirst({
+      where: { username }
+    });
   }
   
   /**

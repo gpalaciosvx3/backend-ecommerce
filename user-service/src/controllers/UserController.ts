@@ -23,8 +23,8 @@ export class UserController {
   getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username } = req.query;
-      const profile = await this.userService.profileService.getUserQuery(username as string | undefined);
-      res.status(201).json(profile);
+      const users = await this.userService.profileService.getUserQuery(username as string | undefined);
+      res.status(201).json(users);
     } catch (error) {
       next(error);
     }
