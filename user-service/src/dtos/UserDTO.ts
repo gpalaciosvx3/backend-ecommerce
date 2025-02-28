@@ -5,9 +5,9 @@ export const RegisterUserDTO = z.object({
   email: z.string().email("Formato de email inválido"),
   username: z.string().min(1, "El username es obligatorio").regex(/^\S+$/, "El username no puede contener espacios"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres")
-    .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
-    .regex(/\d/, "Debe contener al menos un número")
-    .regex(/[\W_]/, "Debe contener al menos un carácter especial")
+    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
+    .regex(/\d/, "La contraseña debe contener al menos un número")
+    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial")
 });
 
 export const GetUserDTO = z.object({
