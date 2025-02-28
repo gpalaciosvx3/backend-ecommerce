@@ -17,7 +17,7 @@ RUN npm install --force
 COPY . .
 
 # Compilar TypeScript
-RUN npm run build
+# RUN npm run build
 
 # Generar Prisma ORM
 RUN npx prisma generate
@@ -27,3 +27,6 @@ EXPOSE 4000
 
 # Ejecutar migraciones de Prisma y arrancar la app
 CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev"]
+#CMD ["npm", "run", "dev"]
+
+
