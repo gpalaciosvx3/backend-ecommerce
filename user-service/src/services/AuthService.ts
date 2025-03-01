@@ -36,12 +36,12 @@ export class AuthService {
   /* 
   * Registra usuario
   */
-  async registerUser(name: string, email: string, password: string, username: string) {
+  async registerUser(name: string, email: string, password: string, username: string, roleId: string) {
     const existingUser = await this.userRepository.findUser(username);
     
-    if (existingUser) throw new AppError("USR => El usuario ya existe", 400);
+    if (existingUser) throw new AppError(`USR => El usuario ${username} ya existe`, 400);
 
-    const registedUser = await this.userRepository.createUser(name, email, password, username);
+    const registedUser = await this.userRepository.createUser(name, email, password, username, roleId);
 
     return ApiResponse.success("Usuario registrado con éxito", registedUser);
   }

@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from 'dotenv';
-import { UserService } from "../services/UserService";
+import { DispatchService } from "../services/DispatchService";
 
 config();
 
 const SECRET_KEY = process.env.JWT_SECRET; // Usa variables de entorno
 export class UserController {
-  private userService = new UserService();
+  private userService = new DispatchService();
  
   /* 
   * AUTH => Autentificación
@@ -25,8 +25,8 @@ export class UserController {
 
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password, username } = req.body;
-      const user = await this.userService.authService.registerUser(name, email, password, username);
+      const { name, email, password, username, roleId } = req.body;
+      const user = await this.userService.authService.registerUser(name, email, password, username, roleId);
       res.status(201).json(user);
     } catch (error) {
       next(error);
@@ -34,7 +34,7 @@ export class UserController {
   }
 
   /* 
-  * PROF => Obtiene usuarios
+  * PROF => Perfiles de Usuario
   */
   getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -50,7 +50,7 @@ export class UserController {
   }
   
   /* 
-  * MANG => Status Usuario
+  * MANG => Manejo de Usuarios
   */
   managmentStatusUser = async (req: Request, res: Response, next: NextFunction) => {
     try {     

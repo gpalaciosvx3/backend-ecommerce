@@ -3,29 +3,42 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-// Middleware para validar y encriptar datos antes de guardarlos
 prisma.$use(async (params: any, next: any) => {
-  if (params.model === "User") {
-    if (params.action === "create" || params.action === "update") {
-      const data = params.args.data;
+  const { model, action, args } = params;
 
-      // VAL - Validar formato de email
-      if (data.email && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)) {
-        throw new Error("USR => Formato de email inválido");
-      }
+  // **Validaciones para User**
+  if (model === "User" && (action === "create" || action === "update")) {
+    const data = args.data;
 
-      // VAL - Status solo "active/inactive"
-      if (data.status && !["active", "inactive"].includes(data.status)) {
-        throw new Error("USR => El estado debe ser 'active' o 'inactive'");
-      }
+    // Validar formato de email
+    if (data.email && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)) {
+      throw new Error("USR => Formato de email inválido");
+    }
 
-      // WRK - Encriptar contraseña antes de guardar
-      if (data.password) {
-        const saltRounds = 10;
-        data.password = await bcrypt.hash(data.password, saltRounds);
-      }
+    // Validar que status solo sea "active" o "inactive"
+    if (data.status && !["active", "inactive"].includes(data.status)) {
+      throw new Error("USR => El estado debe ser 'active' o 'inactive'");
+    }
 
+    // Encriptar contraseña antes de guardarla
+    if (data.password) {
+      const saltRounds = 10;
+      data.password = await bcrypt.hash(data.password, saltRounds);
+    }
+  }
 
+  // **Validaciones para Role**
+  if (model === "Role" && (action === "create" || action === "update")) {
+    const data = args.data;
+
+    // Validar que name tenga máximo 10 caracteres
+    if (data.name && data.name.length > 10) {
+      throw new Error("ROL => El nombre del Rol no puede tener más de 10 caracteres");
+    }
+
+    // Validar que status solo sea "active" o "inactive"
+    if (data.status && !["active", "inactive"].includes(data.status)) {
+      throw new Error("ROL => El estado debe ser 'active' o 'inactive'");
     }
   }
 

@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-
+import { ApiResponse } from "../utils/ApiResponse";
 // Clase base de error personalizada
 class AppError extends Error {
   public statusCode: number;
+  public details?: any; 
 
-  constructor(message: string, statusCode: number) {
+  constructor(message: string, statusCode: number, details?: any) {
     super(message);
     this.statusCode = statusCode;
+    this.details = details;
     Error.captureStackTrace(this, this.constructor);
   }
 }
@@ -36,9 +38,13 @@ class NotFoundError extends AppError {
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Error interno del servidor";
+  const details = err.details || "Sin Detalles del Error";
+
+  console.log('err: ', err);
+  
   console.error(`[ERROR] ${message}`);
 
-  res.status(statusCode).json({ error: message });
+  res.status(statusCode).json(ApiResponse.error(message, statusCode, details));
 };
 
 export { 

@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const RegisterUserDTO = z.object({
   name: z.string()
-    .min(1, "El nombre es obligatorio"),
+    .min(1, "El nombre es obligatorio")
+    .max(10, "El nombre del Usuario no puede tener más de 10 caracteres"),
   email: z.string()
     .min(1, "El email es obligatorio")
     .email("Formato de email inválido"),
@@ -13,7 +14,11 @@ export const RegisterUserDTO = z.object({
     .min(8, "La contraseña debe tener al menos 8 caracteres")
     .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
     .regex(/\d/, "La contraseña debe contener al menos un número")
-    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial")
+    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial"),
+  status: z.enum(["active", "inactive"], { message: "El estado debe ser 'active' o 'inactive'" })
+    .optional(),
+  roleId: z.string()
+    .min(1, "Rol es obligatorio") 
 });
 
 export const GetUserDTO = z.object({
@@ -25,9 +30,20 @@ export const GetUserDTO = z.object({
 });
 
 export const UpdateStatusDTO = z.object ({
+  name: z.string()
+    .min(1, "El nombre es obligatorio")
+    .max(10, "El nombre del Usuario no puede tener más de 10 caracteres"),
+  email: z.string()
+    .min(1, "El email es obligatorio")
+    .email("Formato de email inválido"),
   username: z.string()
     .min(1, "El username es obligatorio")
     .regex(/^\S+$/, "El username no puede contener espacios"),
+  password: z.string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
+    .regex(/\d/, "La contraseña debe contener al menos un número")
+    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial"),
   status: z.enum(["active", "inactive"], { message: "El estado debe ser 'active' o 'inactive'" })
     .optional()
 });

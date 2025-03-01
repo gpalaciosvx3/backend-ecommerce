@@ -1,20 +1,32 @@
 export class ApiResponse<T = any> {
-  public success: boolean;
+  public status: boolean;
+  public statusCode: number;
   public message: string;
-  public data?: T;
+  private data?: T;
+  private detail?: T;
 
-  constructor(success: boolean, message: string, data?: T) {
-    this.success = success;
+  constructor(status: boolean, statusCode: number, message: string, data?: T, detail?: T) {
+    this.status = status;
+    this.statusCode = statusCode;
     this.message = message;
     this.data = data;
+    this.detail = detail;
   }
 
   static success<T = any>(message: string, data?: T) {
-    const formattedData = (typeof data === "object" && data !== null) ? data : { value: data };
-    return new ApiResponse<T>(true, message, formattedData as T);
+    return new ApiResponse<T>(true, 200, message, data);
   }
 
-  static error(message: string) {
-    return new ApiResponse(false, message);
+  static error<T = any>(message: string, statusCode: number, detail?: T) {
+    return new ApiResponse<T>(false, statusCode, message, undefined, detail);
+  }
+
+  toJSON() {
+    return {
+      status: this.status,
+      statusCode: this.statusCode,
+      message: this.message,
+      ...(this.status ? { data: this.data } : { detail: this.detail })
+    };
   }
 }
