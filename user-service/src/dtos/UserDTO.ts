@@ -30,3 +30,14 @@ export const UpdateStatusDTO = z.object ({
   status: z.enum(["active", "inactive"], { message: "El estado debe ser 'active' o 'inactive'" })
     .optional()
 });
+
+export const LoginUserDTO = z.object ({
+  username: z.string()
+    .min(1, "El username es obligatorio")
+    .regex(/^\S+$/, "El username no puede contener espacios"),
+    password: z.string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
+    .regex(/\d/, "La contraseña debe contener al menos un número")
+    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial")
+});

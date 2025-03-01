@@ -15,8 +15,13 @@ class AppError extends Error {
 
 // Usuario no autorizado
 class UnauthorizedError  extends AppError {
-  constructor(message = "USR => Usuario no autorizado") {
+  constructor(message = "JWT => Usuario no autorizado") {
     super(message, 401);
+  }
+}
+class InvalidTokenError  extends AppError {
+  constructor(message = "JWT => Token no válido") {
+    super(message, 403);
   }
 }
 
@@ -40,5 +45,6 @@ export {
   AppError,
   NotFoundError,
   UnauthorizedError,
+  InvalidTokenError,
   errorHandler 
 };

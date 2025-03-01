@@ -23,6 +23,16 @@ export class UserRepository {
       where: { username }
     });
   }
+
+  /**
+   * Obtener usuario por username
+   * @param username Nombre del usuario
+   * @returns Lista de usuarios
+   */
+  async findByUsername(username: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { username } });
+  }
+  
   
   /**
    * Crear un nuevo usuario
