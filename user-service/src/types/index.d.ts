@@ -5,6 +5,8 @@ declare global {
   namespace Express {
     interface Request {
       user?: JwtPayload & { username: string };
+      useCache?: boolean;
+      cacheKey?: string;
     }
   }
 }

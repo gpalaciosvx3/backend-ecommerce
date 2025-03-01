@@ -14,12 +14,16 @@ const roleController = new RoleController();
 const protectedRouter = Router();
 groupMiddleware([authMiddleware], protectedRouter);
 
-router.get("/", roleController.getRoles);
+protectedRouter.get("/", roleController.getRoles);
 
-router.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
+protectedRouter.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
 
-router.patch("/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
+protectedRouter.patch("/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
 
-router.delete("/:id", roleController.deleteRole);
+protectedRouter.delete("/:id", roleController.deleteRole);
+
+/* Montamos las rutas */
+// router.use("/", publicRouter);
+router.use("/", protectedRouter);
 
 export default router;

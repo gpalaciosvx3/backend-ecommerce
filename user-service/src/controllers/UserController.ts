@@ -37,11 +37,9 @@ export class UserController {
   * PROF => Perfiles de Usuario
   */
   getUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.log('s111');
-      
+    try {     
       const { username } = req.query;
-      const users = await this.userService.profileService.getUserQuery(username as string | undefined);
+      const users = await this.userService.profileService.obtainUser(username as string | undefined, req.useCache, req.cacheKey);
       res.status(201).json(users);
     } catch (error) {
       next(error);
