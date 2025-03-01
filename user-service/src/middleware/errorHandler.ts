@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiResponse } from "../utils/ApiResponse";
+import { logger } from "../utils/logger";
+
 // Clase base de error personalizada
 class AppError extends Error {
   public statusCode: number;
@@ -40,7 +42,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   const message = err.message || "Error interno del servidor";
   const details = err.details || "Sin Detalles del Error";
  
-  console.error(`[ERROR] ${message}`);
+  logger.error(`[ERROR] ${message}`);
 
   res.status(statusCode).json(ApiResponse.error(message, statusCode, details));
 };

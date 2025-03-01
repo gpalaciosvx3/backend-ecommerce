@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { config } from 'dotenv';
 import { DispatchService } from "../services/DispatchService";
 
@@ -16,7 +15,7 @@ export class UserController {
     try {
       const { username, password } = req.body;
       const response = await this.userService.authService.login(username, password);
-      
+    
       res.json(response);
     } catch (error) {
       next(error);
@@ -27,6 +26,7 @@ export class UserController {
     try {
       const { name, email, password, username, roleName } = req.body;
       const user = await this.userService.authService.registerUser(name, email, password, username, roleName);
+
       res.status(201).json(user);
     } catch (error) {
       next(error);
@@ -39,6 +39,7 @@ export class UserController {
   getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {          
       const users = await this.userService.profileService.obtainUser(req);
+
       res.status(201).json(users);
     } catch (error) {
       next(error);

@@ -3,6 +3,7 @@ import { CacheService } from "../services/CacheService";
 import { UserRepository } from "../repositories/UserRepository";
 import { NotFoundError } from "../middleware/errorHandler";
 import { ApiResponse } from "../utils/ApiResponse";
+import { logger } from "../utils/logger";
 export class ProfileService {
   private userRepository = new UserRepository();
 
@@ -19,10 +20,10 @@ export class ProfileService {
     if (useCache) {
       const cachedData = await CacheService.getCache(cacheKey);
       if (cachedData) {
-        console.log("Datos obtenidos desde caché para id: ", cacheKey);
+        logger.info("Datos obtenidos desde caché para id: ", cacheKey);
         return ApiResponse.success("[CC] Usuarios obtenidos con éxtio", cachedData);
       } 
-      console.log("No hay datos en caché, consultando DB...");
+      logger.info("No hay datos en caché, consultando DB...");
     }
     
     // **2. Búsqueda en DB**

@@ -1,5 +1,6 @@
 import Redis from "ioredis";
 import { config } from "dotenv";
+import { logger } from "../utils/logger";
 
 config(); 
 
@@ -14,14 +15,9 @@ export const redis = (() => {
       }
     });
 
-    client.on("connect", () => console.log("Conectado a Redis"));
-    client.on("error", (err) => {
-      console.warn("No se pudo conectar a Redis:", err.message);
-    });
-
     return client;
   } catch (error) {
-    console.warn("Redis no disponible, la API funcionará sin caché.");
+    logger.warn("Redis no disponible, la API funcionará sin caché.");
     return null; // Si hay un error, deshabilitar Redis
   }
 })();
@@ -35,7 +31,7 @@ export class CacheService {
       await redis.setex(key, ttl, JSON.stringify(value));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ocurrió un error inesperado";
-      console.warn("Error guardando en Redis:", errorMessage);
+      logger.warn("Error guardando en Redis:", errorMessage);
     }
   }
 
@@ -47,7 +43,7 @@ export class CacheService {
       return data ? JSON.parse(data) : null;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ocurrió un error inesperado";
-      console.warn("Error obteniendo datos de Redis: ", errorMessage);
+      logger.warn("Error obteniendo datos de Redis: ", errorMessage);
       return null;
     }
   }
