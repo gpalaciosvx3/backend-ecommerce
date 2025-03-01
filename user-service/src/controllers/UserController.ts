@@ -25,8 +25,8 @@ export class UserController {
 
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password, username, roleId } = req.body;
-      const user = await this.userService.authService.registerUser(name, email, password, username, roleId);
+      const { name, email, password, username, roleName } = req.body;
+      const user = await this.userService.authService.registerUser(name, email, password, username, roleName);
       res.status(201).json(user);
     } catch (error) {
       next(error);

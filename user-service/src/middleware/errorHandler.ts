@@ -39,9 +39,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   const statusCode = err.statusCode || 500;
   const message = err.message || "Error interno del servidor";
   const details = err.details || "Sin Detalles del Error";
-
-  console.log('err: ', err);
-  
+ 
   console.error(`[ERROR] ${message}`);
 
   res.status(statusCode).json(ApiResponse.error(message, statusCode, details));

@@ -3,7 +3,7 @@ import { ZodSchema } from "zod";
 import { AppError } from "../middleware/errorHandler";
 
 export const validateDTO = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-  try {
+  try {  
     schema.parse({
       ...req.params,  
       ...req.body,    

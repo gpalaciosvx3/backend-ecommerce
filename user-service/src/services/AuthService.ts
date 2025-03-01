@@ -1,8 +1,15 @@
 import { config } from 'dotenv';
 import bcrypt from "bcrypt";
-import { UserRepository } from "../repositories/UserRepository";
-import { AppError } from "../middleware/errorHandler";
 import jwt from "jsonwebtoken";
+/* Repositorios */
+import { UserRepository } from "../repositories/UserRepository";
+import { RoleRepository } from "../repositories/RoleRepository";
+/* Validations */
+import { UsernameExistsValidation } from "../validations/UsernameExistsValidation";
+import { RoleExistsValidation } from "../validations/RoleExistsValidation";
+/* Middleware */
+import { AppError } from "../middleware/errorHandler";
+/* Utils */
 import { ApiResponse } from "../utils/ApiResponse";
 
 config(); 
@@ -10,6 +17,7 @@ config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 export class AuthService {
   private userRepository = new UserRepository();
+  private roleRepository = new RoleRepository();
 
   /* 
   * Genera JWT para el usuario 
@@ -36,13 +44,28 @@ export class AuthService {
   /* 
   * Registra usuario
   */
-  async registerUser(name: string, email: string, password: string, username: string, roleId: string) {
-    const existingUser = await this.userRepository.findUser(username);
+  async registerUser(name: string, email: string, password: string, username: string, roleName: string) {
+    const data: { name: string; email: string; password: string; username: string; roleName: string } & { roleId?: string } = {
+      name, email, password, username, roleName
+    };
     
-    if (existingUser) throw new AppError(`USR => El usuario ${username} ya existe`, 400);
-
-    const registedUser = await this.userRepository.createUser(name, email, password, username, roleId);
-
+    // Crear cadena de validaciones
+    const usernameValidation = new UsernameExistsValidation(this.userRepository);
+    const roleValidation = new RoleExistsValidation(this.roleRepository);
+  
+    usernameValidation.setNext(roleValidation);
+  
+    // Ejecutar validaciones en cadena
+    await usernameValidation.validate(data);
+    
+    console.log('data: ', data);
+    
+  
+    if (!data.roleId) throw new AppError(`ROL => El rol ${roleName} no existe`, 500);
+  
+    const registedUser = await this.userRepository.createUser(name, email, password, username, data.roleId);
+  
     return ApiResponse.success("Usuario registrado con éxito", registedUser);
   }
+  
 }
