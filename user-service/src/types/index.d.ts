@@ -6,7 +6,6 @@ declare global {
     interface Request {
       user?: JwtPayload & { username: string };
       useCache?: boolean;
-      cacheKey?: string;
     }
   }
 }

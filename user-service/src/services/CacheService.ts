@@ -9,14 +9,12 @@ export const redis = (() => {
     const client = new Redis({
       host: process.env.REDIS_HOST || "127.0.0.1",
       port: Number(process.env.REDIS_PORT) || 6379,
-      tls: process.env.REDIS_TLS === "true" ? {} : undefined,
       retryStrategy: (times) => {
-        console.warn(`Intento de reconexión a Redis fallido #${times}`);
-        return null; // No intentar reconectar automáticamente
+        return null; 
       }
     });
 
-    client.on("connect", () => console.log("✅ Conectado a Redis"));
+    client.on("connect", () => console.log("Conectado a Redis"));
     client.on("error", (err) => {
       console.warn("No se pudo conectar a Redis:", err.message);
     });
@@ -31,7 +29,7 @@ export const redis = (() => {
 
 export class CacheService {
   // Guardar datos en caché (solo si Redis está disponible)
-  public static async setCache(key: string, value: any, ttl: number = Number(process.env.REDIS_TTL) || 1800): Promise<void> {
+  public static async setCache(key: string, value: any, ttl: number = Number(process.env.REDIS_TTL) || 500): Promise<void> {
     if (!redis) return; 
     try {
       await redis.setex(key, ttl, JSON.stringify(value));
