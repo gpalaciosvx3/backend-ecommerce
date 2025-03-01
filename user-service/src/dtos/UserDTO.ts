@@ -4,6 +4,7 @@ export const RegisterUserDTO = z.object({
   name: z.string()
     .min(1, "El nombre es obligatorio"),
   email: z.string()
+    .min(1, "El email es obligatorio")
     .email("Formato de email inválido"),
   username: z.string()
     .min(1, "El username es obligatorio")

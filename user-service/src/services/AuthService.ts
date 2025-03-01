@@ -30,7 +30,7 @@ export class AuthService {
 
     const token = this.generateToken(user.id);
 
-    return ApiResponse.success("Logeado con éxito", token);
+    return ApiResponse.success("Logeado con éxito", { token });
   }
 
   /* 
@@ -41,6 +41,8 @@ export class AuthService {
     
     if (existingUser) throw new AppError("USR => El usuario ya existe", 400);
 
-    return this.userRepository.createUser(name, email, password, username);
+    const registedUser = await this.userRepository.createUser(name, email, password, username);
+
+    return ApiResponse.success("Usuario registrado con éxito", registedUser);
   }
 }
