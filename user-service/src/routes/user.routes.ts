@@ -18,8 +18,8 @@ const publicRouter = Router();
 // AUTH
 publicRouter.post("/login", validateDTO(LoginUserDTO), userController.login);
 
-publicRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
 // PROF
+
 // MANG
 
 /* 
@@ -28,7 +28,7 @@ publicRouter.post("/register", validateDTO(RegisterUserDTO), userController.crea
 const protectedRouter = Router();
 groupMiddleware([authMiddleware], protectedRouter);
 // AUTH
-// protectedRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
+protectedRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
 // PROF
 protectedRouter.get("/", validateDTO(GetUserDTO), userController.getUser);
 // MANG
