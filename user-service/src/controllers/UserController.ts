@@ -32,12 +32,14 @@ export class UserController {
   }
   
   /* 
-  * MANG => Desactiva Usuario
+  * MANG => Status Usuario
   */
-  deactivateUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+  managmentStatusUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {     
       const { username } = req.params;
-      const response = await this.userService.managementService.deactivateUser(username);
+      const { status } = req.body;
+
+      const response = await this.userService.managementService.statusUser(username, status);
       res.json(response);
     } catch (error) {
       next(error);

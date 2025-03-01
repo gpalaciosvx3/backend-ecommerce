@@ -39,6 +39,19 @@ export class UserRepository {
   }
 
   /**
+   * Actualiza Status
+   * @param username - Nombre de usuario
+   * @param status - Status de usuario
+   * @returns Usuario actualizado
+   */
+  async updateStatus(username: string, status: string): Promise<User | null> {
+    return prisma.user.update({
+      where: { username },
+      data: { status }
+    });
+  }
+
+  /**
    * Actualizar un usuario (Ej: desactivarlo)
    * @param email - Email del usuario
    * @param data - Datos a actualizar

@@ -1,18 +1,18 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController";
 import { validateDTO } from "../middleware/dtoValidator";
-import { RegisterUserDTO, GetUserDTO } from "../dtos/UserDTO";
+import { RegisterUserDTO, GetUserDTO, UpdateStatusDTO } from "../dtos/UserDTO";
 
 const router = Router();
 const userController = new UserController();
 
-// Rutas de Autenticación
+// Auntenticación
 router.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
 
-// Rutas de Perfil
+// Gestión de Perfiles
 router.get("/", validateDTO(GetUserDTO), userController.getUser);
 
-// Rutas de Administración
-router.patch("/desactivate/:username", validateDTO(GetUserDTO), userController.deactivateUser);
+// Gestión de Cuenta
+router.patch("/status/:username", validateDTO(UpdateStatusDTO), userController.managmentStatusUser);
 
 export default router;
