@@ -56,10 +56,7 @@ export class AuthService {
     usernameValidation.setNext(roleValidation);
   
     // Ejecutar validaciones en cadena
-    await usernameValidation.validate(data);
-    
-    console.log('data: ', data);
-    
+    await usernameValidation.validate(data);  
   
     if (!data.roleId) throw new AppError(`ROL => El rol ${roleName} no existe`, 500);
   
