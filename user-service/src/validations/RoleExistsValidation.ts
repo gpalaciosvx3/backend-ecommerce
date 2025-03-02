@@ -1,7 +1,5 @@
 import { RoleRepository } from "../repositories/RoleRepository";
 import { UserValidation } from "./UserValidation";
-import { AppError } from "../middleware/errorHandler";
-
 export class RoleExistsValidation extends UserValidation {
   constructor(private roleRepository: RoleRepository) {
     super();

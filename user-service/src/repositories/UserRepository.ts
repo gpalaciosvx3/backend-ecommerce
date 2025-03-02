@@ -16,12 +16,29 @@ export class UserRepository {
    * @returns Lista de usuarios
    */
   async findUser(username?: string): Promise<User | User[] | null> {
-    if (!username) return prisma.user.findMany();
-
-    // Busca un usuario por username
+      if (!username) {
+        return prisma.user.findMany({
+            include: {
+                role: { select: { name: true } } 
+            }
+        });
+    }
+    
     return prisma.user.findFirst({
-      where: { username }
+        where: { username },
+        include: {
+            role: { select: { name: true } } 
+        }
     });
+  }
+
+  /**
+   * Obtener usuario por ID
+   * @param id Id del usuario
+   * @returns Lista de usuarios
+   */
+  async findById(id: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { id } });
   }
 
   /**

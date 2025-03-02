@@ -23,6 +23,8 @@ export const redis = (() => {
 })();
 
 export class CacheService {
+  private static TOKEN_BLACKLIST_PREFIX = "blacklisted-token:";
+
   // Guardar datos en caché (solo si Redis está disponible)
   public static async setCache(key: string, value: any, ttl: number = Number(process.env.REDIS_TTL) || 500): Promise<void> {
     if (!redis) return; 
@@ -71,4 +73,28 @@ export class CacheService {
 
     return { data, fromCache: false };
   }
+
+  // Agregar token a la lista negra con tiempo de expiración
+  public static async invalidateToken(token: string, expiresIn: number = 3600) {
+    if (!redis) return null;
+    try {
+        await redis.setex(`${this.TOKEN_BLACKLIST_PREFIX}${token}`, expiresIn, "invalid");
+        logger.info(`Token invalidado: ${token}`);
+    } catch (error) {
+        logger.error("Error al invalidar token en Redis:", error);
+    }
+  }
+
+  // Verificar si el token está en la lista negra
+  public static async isTokenInvalid(token: string): Promise<boolean> {
+    if (!redis) return false; 
+    try {
+        const result = await redis.get(`${this.TOKEN_BLACKLIST_PREFIX}${token}`);
+        return result !== null;
+    } catch (error) {
+        logger.error("Error al verificar token en Redis:", error);
+        return false;
+    }
+  }
+
 }

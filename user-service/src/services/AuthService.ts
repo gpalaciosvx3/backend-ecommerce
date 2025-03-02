@@ -22,8 +22,15 @@ export class AuthService {
   /* 
   * Genera JWT para el usuario 
   */
-  generateToken(userId: string) {
-    return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+  async generateToken(userId: string, roleId: string) {   
+    const roleName = await this.roleRepository.findRoleNameById(roleId);
+    const isAdmin = roleName === "Admin";
+    
+    return jwt.sign(
+      { userId, isAdmin: roleName === "admin" }, 
+      process.env.JWT_SECRET!,
+      { expiresIn: "1h" }
+    );
   }
 
   /* 
@@ -36,8 +43,8 @@ export class AuthService {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new AppError("USR => Contraseña incorrecta", 401);
 
-    const token = this.generateToken(user.id);
-
+    const token = await this.generateToken(user.id, user.roleId);
+    
     return ApiResponse.success("Logeado con éxito", { token });
   }
 

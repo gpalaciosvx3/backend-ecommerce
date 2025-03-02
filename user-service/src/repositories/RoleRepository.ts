@@ -35,6 +35,20 @@ export class RoleRepository {
   }
 
   /**
+   * Obtiene name del rol por ID
+   * @param id ID del Rol
+   * @returns nameRol
+   */
+  async findRoleNameById(id: string) {
+    const role = await prisma.role.findUnique({
+      where: { id },
+      select: { name: true }, 
+    });
+    
+    return role ? String(role.name) : null; 
+  }
+
+  /**
    * Obtiene rol por nombre
    * @param name Nombre del Rol
    * @returns rol creado

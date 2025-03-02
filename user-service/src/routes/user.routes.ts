@@ -4,6 +4,7 @@ import { UserController } from "../controllers/UserController";
 /* Middleware's */
 import { groupMiddleware } from "../middleware/groupMiddleware";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { adminMiddleware } from "../middleware/adminMiddleware";
 import { cacheMiddleware } from "../middleware/cacheMiddleware";
 import { validateDTO } from "../middleware/dtoValidator";
 /* DTO's */
@@ -21,16 +22,17 @@ const publicRouter = Router();
 publicRouter.post("/login", validateDTO(LoginUserDTO), userController.login);
 
 /* 
-* Grupo de middlewares para rutas protegidas 
+* Grupo de middlewares para rutas protegidas de Administrador
 *   - Requiere autenticación
+*   - Requiere que el Usuario tenga el rol Admin
 */
-const protectedRouter = Router();
-groupMiddleware([authMiddleware], protectedRouter);
+const protectedAdminRouter = Router();
+groupMiddleware([authMiddleware,adminMiddleware], protectedAdminRouter);
 
 // Registro
-protectedRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
+protectedAdminRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
 // Maneja Status
-protectedRouter.patch("/status/:username", validateDTO(UpdateStatusDTO), userController.managmentStatusUser);
+protectedAdminRouter.patch("/status/:username", validateDTO(UpdateStatusDTO), userController.managmentStatusUser);
 
 /* 
 * Grupo de middlewares para rutas cacheadas 
@@ -44,8 +46,8 @@ groupMiddleware([authMiddleware, cacheMiddleware], cacheRouter);
 cacheRouter.get("/", validateDTO(GetUserDTO), userController.getUser);
 
 /* Montamos las rutas */
-router.use("/", publicRouter);
-router.use("/", protectedRouter);
-router.use("/", cacheRouter);
+router.use("/public", publicRouter);
+router.use("/admin", protectedAdminRouter);
+router.use("/cache", cacheRouter);
 
 export default router;
