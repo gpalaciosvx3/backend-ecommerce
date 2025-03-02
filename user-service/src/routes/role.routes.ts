@@ -4,6 +4,7 @@ import { RoleController } from "../controllers/RoleController";
 /* Middleware */
 import { groupMiddleware } from "../middleware/groupMiddleware";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { adminMiddleware } from "../middleware/adminMiddleware";
 import { cacheMiddleware } from "../middleware/cacheMiddleware";
 import { validateDTO } from "../middleware/dtoValidator";
 /* DTO's */
@@ -13,18 +14,19 @@ const router = Router();
 const roleController = new RoleController();
 
 /* 
-* Grupo de middlewares para rutas protegidas 
+* Grupo de middlewares para rutas protegidas de Administrador
 *   - Requiere autenticación
+*   - Requiere que el Usuario tenga el rol Admin
 */
-const protectedRouter = Router();
-groupMiddleware([authMiddleware], protectedRouter);
+const protectedAdminRouter = Router();
+groupMiddleware([authMiddleware,adminMiddleware], protectedAdminRouter);
 
 // Registra Rol
-protectedRouter.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
+protectedAdminRouter.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
 // Actualizar Rol
-protectedRouter.patch("/update/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
+protectedAdminRouter.patch("/update/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
 // Elimina rol
-protectedRouter.delete("/delete/:name", validateDTO(DeleteRoleDTO),roleController.deleteRole);
+protectedAdminRouter.delete("/delete/:name", validateDTO(DeleteRoleDTO),roleController.deleteRole);
 
 /* 
 * Grupo de middlewares para rutas cacheadas 
@@ -38,7 +40,7 @@ groupMiddleware([authMiddleware,cacheMiddleware], cacheRouter);
 cacheRouter.get("/", validateDTO(GetRoleDTO), roleController.getRoles);
 
 /* Montamos las rutas */
-router.use("/", protectedRouter);
-router.use("/", cacheRouter);
+router.use("/admin", protectedAdminRouter);
+router.use("/cache", cacheRouter);
 
 export default router;
