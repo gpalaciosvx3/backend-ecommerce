@@ -11,7 +11,7 @@ export class AdminStatusValidation extends UserValidation {
     async validate(data: any) {
         if (
           data.roleId === process.env.ADMIN_ROLE_ID &&
-          data.UserFormStatus === "inactive"
+          data.userFormStatus === "inactive"
         ) throw new AppError(`USR => El Usuario ${data.username} es Admin y no puede pasar a Inactivo`, 404);
 
         await super.validate(data);

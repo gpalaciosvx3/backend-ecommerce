@@ -8,6 +8,6 @@ export interface AuthData extends Partial<User> {
   password?: string;
   roleName?: string;
   userFormPassword?: string;
-  UserFormStatus?: string;
+  userFormStatus?: string;
   role?: Omit<Role, "users"> & { roleId: string; roleName: string; roleStatus: string; roleCreatedAt: Date };
 }

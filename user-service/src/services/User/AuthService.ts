@@ -37,13 +37,13 @@ export class AuthService {
   /* 
   * Login
   */
-  async login(username: string, password: string) {
-    const data: AuthData = { username, password };
+  async login(username: string, userFormPassword: string) {
+    const data: AuthData = { username, userFormPassword };
 
     // *1. Crear cadena de validaciones*
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Exitende el user
     const roleValidation = new RoleExistsValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
-    const passwordValidation = new PasswordMatchValidation(this.userRepository); // Valida que la clave ingresada corresponda al usuario
+    const passwordValidation = new PasswordMatchValidation(); // Valida que la clave ingresada corresponda al usuario
 
     usernameValidation.setNext(roleValidation);
     roleValidation.setNext(passwordValidation);

@@ -10,12 +10,12 @@ export class RoleExistsValidation extends UserValidation {
   /*
   * Valida que exista el Rol
   */
-  async validate(data: any) {    
-    const existingRole = await this.roleRepository.findRoleByName(data.roleName);
-    if (!existingRole) throw new NotFoundError(`USR => El rol ${data.roleName} no existe`); 
+  async validate(data: any) {        
+    const existingRole = await this.roleRepository.findRoleById(data.roleId);
+    if (!existingRole) throw new NotFoundError(`USR => El rol con ID ${data.roleId} no existe`); 
    
     // Extendemos rol transformado
-    data.role = ManagementService.transformRoleForAuth(existingRole);   
+    data.role = ManagementService.transformRoleForAuth(existingRole);      
 
     await super.validate(data); 
   }

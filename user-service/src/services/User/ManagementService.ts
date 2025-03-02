@@ -24,8 +24,8 @@ export class ManagementService {
   /* 
   * Maneja status de usuario
   */
-  async statusUser(username: string, status: string) {
-    const data: AuthData = { username, status };
+  async statusUser(username: string, userFormStatus: string) {
+    const data: AuthData = { username, userFormStatus };
 
     // *1. Crear cadena de validaciones* 
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Existende el user
@@ -37,7 +37,7 @@ export class ManagementService {
     await usernameValidation.validate(data);  
 
     // *3. Actualiza el usuario*
-    const updatedUser = await this.userRepository.updateStatus(data.username!, status);
+    const updatedUser = await this.userRepository.updateStatus(data.username!, userFormStatus);
 
     return ApiResponse.success("Usuario actualizado con éxito", updatedUser);
   }
