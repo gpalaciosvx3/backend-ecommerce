@@ -30,7 +30,7 @@ export class RoleRepository {
    * @param id ID del Rol
    * @returns rol creado
    */
-  async getRoleById(id: string) {
+  async findRoleById(id: string) {
     return prisma.role.findUnique({ where: { id } });
   }
 
@@ -39,7 +39,7 @@ export class RoleRepository {
    * @param name Nombre del Rol
    * @returns rol creado
    */
-  async getRoleByName(name: string) {
+  async findRoleByName(name: string) {
     return prisma.role.findUnique({ where: { name } });
   }
 
@@ -48,7 +48,7 @@ export class RoleRepository {
    * @param name Nombre del Rol
    * @returns IdRole
    */
-  async getRoleIdByName(name: string) {
+  async findRoleIdByName(name: string) {
     const role = await prisma.role.findUnique({
       where: { name },
       select: { id: true }, 

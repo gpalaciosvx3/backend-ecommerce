@@ -11,7 +11,7 @@ export class RoleExistsValidation extends UserValidation {
   * Valida que exista el Rol
   */
   async validate(data: any) {    
-    const roleId = await this.roleRepository.getRoleIdByName(data.roleName);
+    const roleId = await this.roleRepository.findRoleIdByName(data.roleName);
 
     data.roleId = roleId;   
 

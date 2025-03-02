@@ -7,7 +7,7 @@ import { authMiddleware } from "../middleware/authMiddleware";
 import { cacheMiddleware } from "../middleware/cacheMiddleware";
 import { validateDTO } from "../middleware/dtoValidator";
 /* DTO's */
-import { CreateRoleDTO, UpdateRoleDTO, GetRoleDTO } from "../dtos/RoleDTO";
+import { CreateRoleDTO, UpdateRoleDTO, GetRoleDTO, DeleteRoleDTO } from "../dtos/RoleDTO";
 
 const router = Router();
 const roleController = new RoleController();
@@ -22,9 +22,9 @@ groupMiddleware([authMiddleware], protectedRouter);
 // Registra Rol
 protectedRouter.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
 // Actualizar Rol
-protectedRouter.patch("/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
+protectedRouter.patch("/update/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
 // Elimina rol
-protectedRouter.delete("/:id", roleController.deleteRole);
+protectedRouter.delete("/delete/:name", validateDTO(DeleteRoleDTO),roleController.deleteRole);
 
 /* 
 * Grupo de middlewares para rutas cacheadas 

@@ -42,8 +42,8 @@ export class RoleController {
 
   deleteRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;
-      const deleted = await this.dispatchService.roleService.deleteRole(id);
+      const { name } = req.params;
+      const deleted = await this.dispatchService.roleService.deleteRole(name);
 
       res.json(deleted);
     } catch (error) {

@@ -3,7 +3,6 @@ import { CacheService } from "../services/CacheService";
 import { UserRepository } from "../repositories/UserRepository";
 import { NotFoundError } from "../middleware/errorHandler";
 import { ApiResponse } from "../utils/ApiResponse";
-import { logger } from "../utils/logger";
 export class ProfileService {
   private userRepository = new UserRepository();
 

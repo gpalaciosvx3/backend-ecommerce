@@ -12,7 +12,7 @@ export class RoleService {
   * Crea Rol
   */
   async createRole(name: string) {
-    const existingRole = await this.roleRepository.getRoleByName(name);
+    const existingRole = await this.roleRepository.findRoleByName(name);
     if (existingRole) throw new AppError(`ROL => El rol ${name} ya existe`, 400);
     
     const rol = await this.roleRepository.createRole(name);
@@ -27,7 +27,6 @@ export class RoleService {
     const name = req.query.name as string | undefined;
     const cacheKey = name ? `rol:${name}` : "rol:all";
     const useCache = (req as any).useCache ?? false;
-    console.log('cacheKey: ', cacheKey);
     
     const { data, fromCache } = await CacheService.getOrSetCache(
         cacheKey,
@@ -47,13 +46,19 @@ export class RoleService {
   * Actualiza Rol
   */
   async updateRole(id: string, name: string) {
-    const rol = await this.roleRepository.updateRole(id, name);
+    const updatedRole = await this.roleRepository.updateRole(id, name);
+
+    return ApiResponse.success("Usuario actualizado con éxito", updatedRole);
   }
 
   /* 
   * Elimina Rol
   */
-  async deleteRole(id: string) {
-    return await this.roleRepository.deleteRole(id);
+  async deleteRole(name: string) {
+    const existingRole = await this.roleRepository.findRoleByName(name);    
+    if (!existingRole) throw new AppError(`ROL => El rol ${name} no existe`, 400);
+
+    const deletedRole = await this.roleRepository.deleteRole(existingRole.id);
+    return ApiResponse.success("Usuario eliminado con éxito", deletedRole);
   }
 }
