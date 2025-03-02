@@ -1,18 +1,27 @@
-import { UserRepository } from "../repositories/UserRepository";
 import { UserValidation } from "./UserValidation";
-import { AppError } from "../middleware/errorHandler";
+import { NotFoundError } from "../middleware/errorHandler";
 
 export class UsernameExistsValidation extends UserValidation {
-  constructor(private userRepository: UserRepository) {
+  constructor(private userRepository: any) {
     super();
   }
 
   /* 
   * Valida si es que ya existe el Usuario
   */
-  async validate(data: any) {
-    const existingUser = await this.userRepository.findUser(data.username);
-    if (existingUser) throw new AppError(`USR => El usuario ${data.username} ya existe`, 400); 
+  async validate(data: any) {   
+    const existingUser = await this.userRepository.findOnlyByUsername(data.username);
+    if (!existingUser) throw new NotFoundError(`USR => El usuario ${data.username} no existe en la DB`);    
+
+    // Extiende usuario encontrado de la validacion
+    Object.assign(  
+      data, 
+      existingUser,
+      { 
+        UserFormPassword: data.password || null,
+        UserFormStatus: data.status || null,
+      }
+    );   
 
     await super.validate(data); 
   }

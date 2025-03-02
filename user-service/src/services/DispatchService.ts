@@ -1,7 +1,7 @@
-import { AuthService } from "./AuthService";
-import { ProfileService } from "./ProfileService";
-import { ManagementService } from "./ManagementService";
-import { RoleService } from "./RoleService";
+import { AuthService } from "./User/AuthService";
+import { ProfileService } from "./User/ProfileService";
+import { ManagementService } from "./User/ManagementService";
+import { RoleService } from "./Role/RoleService";
 
 /* 
 * Servicio orquestador de funcionalidades en user-service.

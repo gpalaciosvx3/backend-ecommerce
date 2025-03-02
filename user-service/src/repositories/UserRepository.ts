@@ -1,6 +1,8 @@
+import { config } from 'dotenv';
 import prisma from '../config/db'
 import { User } from "../models/User";
 
+config(); 
 export class UserRepository {
   /**
    * Obtener todos los usuarios
@@ -52,6 +54,17 @@ export class UserRepository {
       include: {
         role: { select: {name: true } }
       }
+    });
+  }
+
+  /**
+   * Obtener usuario por username
+   * @param username Nombre del usuario
+   * @returns Lista de usuarios
+   */
+  async findOnlyByUsername(username: string): Promise<User | null> {
+    return prisma.user.findUnique({ 
+      where: { username }
     });
   }
     
@@ -118,5 +131,23 @@ export class UserRepository {
 
     return updatedUser;
   }
+
+   /**
+     * Contar usuarios con rol de admin
+     * @returns Número total de usuarios con rol admin
+     */
+   async countAdmins(): Promise<number> {
+    try {
+        const adminRoleId = process.env.ADMIN_ROLE_ID;
+
+        const count = await prisma.user.count({
+            where: { roleId: adminRoleId }
+        });
+
+        return count;
+    } catch (error) {
+        return 0;
+    }
+}
 
 }

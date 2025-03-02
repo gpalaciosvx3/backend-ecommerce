@@ -1,8 +1,8 @@
 import { Request } from "express";
-import { CacheService } from "../services/CacheService";
-import { UserRepository } from "../repositories/UserRepository";
-import { NotFoundError } from "../middleware/errorHandler";
-import { ApiResponse } from "../utils/ApiResponse";
+import { CacheService } from "../../services/CacheService";
+import { UserRepository } from "../../repositories/UserRepository";
+import { NotFoundError } from "../../middleware/errorHandler";
+import { ApiResponse } from "../../utils/ApiResponse";
 export class ProfileService {
   private userRepository = new UserRepository();
 

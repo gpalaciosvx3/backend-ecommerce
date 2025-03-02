@@ -17,7 +17,7 @@ export const adminMiddleware = async (req: Request, res: Response, next: NextFun
     try {
         // Verificar si el token ha sido invalidado
         const isInvalid = await CacheService.isTokenInvalid(token);
-        if (isInvalid) throw new InvalidTokenError("JWT => [CC] Token inválido. Por favor, inicie sesión nuevamente.")
+        if (isInvalid) throw new InvalidTokenError("JWT => [CC] Token no Admin se encuentra en blackList. Por favor, inicie sesión nuevamente.")
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
@@ -36,6 +36,6 @@ export const adminMiddleware = async (req: Request, res: Response, next: NextFun
         next();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ocurrió un error inesperado";
-      next(new InvalidTokenError(`JWT => Error verificando token: ${errorMessage}`));
+      next(new InvalidTokenError(`${errorMessage}`));
     }
 };

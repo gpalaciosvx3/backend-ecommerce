@@ -1,8 +1,8 @@
 import { UserValidation } from "./UserValidation";
-import { NotFoundError } from "../middleware/errorHandler";
+import { AppError } from "../middleware/errorHandler";
 import { ManagementService } from "../services/User/ManagementService";
 
-export class RoleExistsValidation extends UserValidation {
+export class RoleNotExistsValidation extends UserValidation {
   constructor(private roleRepository: any) {
     super();
   }
@@ -12,7 +12,7 @@ export class RoleExistsValidation extends UserValidation {
   */
   async validate(data: any) {    
     const existingRole = await this.roleRepository.findRoleByName(data.roleName);
-    if (!existingRole) throw new NotFoundError(`USR => El rol ${data.roleName} no existe`); 
+    if (existingRole) throw new AppError(`ROL => El rol ${data.roleName} ya existe`, 400); 
    
     // Extendemos rol transformado
     data.role = ManagementService.transformRoleForAuth(existingRole);   
