@@ -6,7 +6,7 @@ import { RoleRepository } from "../../repositories/RoleRepository";
 import { UsernameExistsValidation } from "../../validations/UsernameExistsValidation";
 import { AdminStatusValidation } from "../../validations/AdminStatusValidation";
 import { AdminUniqueValidation  } from "../../validations/AdminUniqueValidation";
-import { RoleExistsValidation } from "../../validations/RoleExistsValidation";
+import { RoleExistsByIdValidation } from "../../validations/RoleExistsByIdValidation";
 /* Utils */
 import { ApiResponse } from "../../utils/ApiResponse";
 /* Services */
@@ -50,7 +50,7 @@ export class ManagementService {
 
     // *1. Crear cadena de validaciones* 
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Existende el user
-    const roleValidation = new RoleExistsValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
+    const roleValidation = new RoleExistsByIdValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
     const adminUniqueValidation = new AdminUniqueValidation (this.userRepository);
 
     usernameValidation.setNext(roleValidation);

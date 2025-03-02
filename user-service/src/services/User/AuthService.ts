@@ -6,7 +6,8 @@ import { RoleRepository } from "../../repositories/RoleRepository";
 /* Validations */
 import { UsernameNotExistsValidation } from "../../validations/UsernameNotExistsValidation";
 import { UsernameExistsValidation } from "../../validations/UsernameExistsValidation";
-import { RoleExistsValidation } from "../../validations/RoleExistsValidation";
+import { RoleExistsByIdValidation } from "../../validations/RoleExistsByIdValidation";
+import { RoleExistsByNameValidation } from "../../validations/RoleExistsByNameValidation";
 import { PasswordMatchValidation } from "../../validations/PasswordMatchValidation";
 /* Utils */
 import { ApiResponse } from "../../utils/ApiResponse";
@@ -42,7 +43,7 @@ export class AuthService {
 
     // *1. Crear cadena de validaciones*
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Exitende el user
-    const roleValidation = new RoleExistsValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
+    const roleValidation = new RoleExistsByIdValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
     const passwordValidation = new PasswordMatchValidation(); // Valida que la clave ingresada corresponda al usuario
 
     usernameValidation.setNext(roleValidation);
@@ -65,7 +66,7 @@ export class AuthService {
         
     // *1. Crear cadena de validaciones* 
     const usernameValidation = new UsernameNotExistsValidation(this.userRepository); // Valida que usuario NO exista 
-    const roleValidation = new RoleExistsValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
+    const roleValidation = new RoleExistsByNameValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
   
     usernameValidation.setNext(roleValidation);
   
