@@ -38,5 +38,8 @@ export const DeleteRoleDTO = z.object({
       invalid_type_error: "Nombre debe ser una cadena de texto"
     })
     .min(1, "El nombre del Rol es obligatorio")
-    .max(10, "El nombre del Rol no puede tener más de 10 caracteres"),
+    .max(10, "El nombre del Rol no puede tener más de 10 caracteres")
+    .refine((value) => value.toLowerCase() !== "admin", {
+      message: "No se puede eliminar el rol 'Admin'",
+    }),
 });
