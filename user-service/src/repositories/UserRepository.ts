@@ -47,7 +47,12 @@ export class UserRepository {
    * @returns Lista de usuarios
    */
   async findByUsername(username: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { username } });
+    return prisma.user.findUnique({ 
+      where: { username },
+      include: {
+        role: { select: {name: true } }
+      }
+    });
   }
     
   /**
@@ -98,4 +103,20 @@ export class UserRepository {
       data,
     });
   }
+
+  /**
+     * Actualiza el rol de un usuario
+     * @param userId - ID del usuario
+     * @param newRoleId - Nuevo ID del rol
+     * @returns Usuario actualizado
+     */
+  async updateRole(userId: string, newRoleId: string) {
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { roleId: newRoleId }
+    });
+
+    return updatedUser;
+  }
+
 }

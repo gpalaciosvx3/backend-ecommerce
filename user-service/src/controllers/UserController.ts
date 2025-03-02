@@ -61,5 +61,18 @@ export class UserController {
       next(error);
     }
   }
+
+  managmentRoleUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {     
+      const { username } = req.params;
+      const { roleName } = req.body;
+      const token = req.headers.authorization?.split(" ")[1]; 
+
+      const response = await this.dispatchService.managementService.updateUserRole(username, roleName,token);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
   
 }

@@ -8,7 +8,7 @@ import { adminMiddleware } from "../middleware/adminMiddleware";
 import { cacheMiddleware } from "../middleware/cacheMiddleware";
 import { validateDTO } from "../middleware/dtoValidator";
 /* DTO's */
-import { RegisterUserDTO, GetUserDTO, UpdateStatusDTO, LoginUserDTO } from "../dtos/UserDTO";
+import { RegisterUserDTO, GetUserDTO, UpdateStatusDTO, LoginUserDTO, UpdateUserRoleDTO } from "../dtos/UserDTO";
 
 const router = Router();
 const userController = new UserController();
@@ -18,8 +18,8 @@ const userController = new UserController();
 *   - No requieren autenticación 
 */
 const publicRouter = Router();
-// Login
-publicRouter.post("/login", validateDTO(LoginUserDTO), userController.login);
+
+publicRouter.post("/login", validateDTO(LoginUserDTO), userController.login); // Login
 
 /* 
 * Grupo de middlewares para rutas protegidas de Administrador
@@ -29,10 +29,9 @@ publicRouter.post("/login", validateDTO(LoginUserDTO), userController.login);
 const protectedAdminRouter = Router();
 groupMiddleware([authMiddleware,adminMiddleware], protectedAdminRouter);
 
-// Registro
-protectedAdminRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser);
-// Maneja Status
-protectedAdminRouter.patch("/status/:username", validateDTO(UpdateStatusDTO), userController.managmentStatusUser);
+protectedAdminRouter.post("/register", validateDTO(RegisterUserDTO), userController.createUser); // Registro
+protectedAdminRouter.patch("/status/:username", validateDTO(UpdateStatusDTO), userController.managmentStatusUser); // Maneja Status
+protectedAdminRouter.patch("/userRole/:username", validateDTO(UpdateUserRoleDTO), userController.managmentRoleUser); // Maneja Status
 
 /* 
 * Grupo de middlewares para rutas cacheadas 
@@ -42,8 +41,7 @@ protectedAdminRouter.patch("/status/:username", validateDTO(UpdateStatusDTO), us
 const cacheRouter = Router();
 groupMiddleware([authMiddleware, cacheMiddleware], cacheRouter);
 
-// GetUsuarios
-cacheRouter.get("/", validateDTO(GetUserDTO), userController.getUser);
+cacheRouter.get("/", validateDTO(GetUserDTO), userController.getUser); // GetUsuarios
 
 /* Montamos las rutas */
 router.use("/public", publicRouter);

@@ -43,30 +43,17 @@ export const GetUserDTO = z.object({
 });
 
 export const UpdateStatusDTO = z.object ({
-  name: z.string()
-    .min(1, "El nombre es obligatorio")
-    .max(10, "El nombre del Usuario no puede tener más de 10 caracteres")
-    .optional(),
-  email: z.string()
-    .min(1, "El email es obligatorio")
-    .email("Formato de email inválido")
-    .optional(),
   username: z.string({
       required_error: "Username es obligatorio",
       invalid_type_error: "Username debe ser una cadena de texto"
     })
     .min(1, "El username es obligatorio")
     .regex(/^\S+$/, "El username no puede contener espacios"),
-  password: z.string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
-    .regex(/\d/, "La contraseña debe contener al menos un número")
-    .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial")
-    .optional(),
-  status: z.enum(["active", "inactive"], { message: "El estado debe ser 'active' o 'inactive'" })
-    .optional(),
-  roleName: z.string().min(1, "Rol es obligatorio") 
-    .optional(),
+    status: z.enum(["active", "inactive"], {
+        message: "El estado debe ser 'active' o 'inactive'"
+    }).refine(value => value !== undefined, {
+        message: "El estado es obligatorio"
+    })
 });
 
 export const LoginUserDTO = z.object ({
@@ -78,4 +65,18 @@ export const LoginUserDTO = z.object ({
     .regex(/[A-Z]/, "La contraseña debe contener al menos una mayúscula")
     .regex(/\d/, "La contraseña debe contener al menos un número")
     .regex(/[\W_]/, "La contraseña debe contener al menos un carácter especial")
+});
+
+export const UpdateUserRoleDTO = z.object ({
+  username: z.string({
+      required_error: "Username es obligatorio",
+      invalid_type_error: "Username debe ser una cadena de texto"
+    })
+    .min(1, "El username es obligatorio")
+    .regex(/^\S+$/, "El username no puede contener espacios"),
+  roleName: z.string({
+      required_error: "ROL es obligatorio",
+      invalid_type_error: "ROL debe ser una cadena de texto"
+    })
+    .min(1, "Rol es obligatorio") 
 });
