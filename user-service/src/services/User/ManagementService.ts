@@ -6,7 +6,7 @@ import { RoleRepository } from "../../repositories/RoleRepository";
 import { UsernameExistsValidation } from "../../validations/UsernameExistsValidation";
 import { AdminStatusValidation } from "../../validations/AdminStatusValidation";
 import { AdminUniqueValidation  } from "../../validations/AdminUniqueValidation";
-import { RoleExistsByIdValidation } from "../../validations/RoleExistsByIdValidation";
+import { RoleExistsByNameValidation } from "../../validations/RoleExistsByNameValidation";
 /* Utils */
 import { ApiResponse } from "../../utils/ApiResponse";
 /* Services */
@@ -50,7 +50,7 @@ export class ManagementService {
 
     // *1. Crear cadena de validaciones* 
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Existende el user
-    const roleValidation = new RoleExistsByIdValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
+    const roleValidation = new RoleExistsByNameValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
     const adminUniqueValidation = new AdminUniqueValidation (this.userRepository);
 
     usernameValidation.setNext(roleValidation);
@@ -60,9 +60,9 @@ export class ManagementService {
     await usernameValidation.validate(data);  
 
     // *3. Actualiza Usuario Rol*
-    const updatedRoleUser = await this.userRepository.updateRole(data.id!, data.roleId!);
+    const updatedRoleUser = await this.userRepository.updateRole(data.id!, data.role!.roleId);
 
-    // *5. Si el usuario pierde rol de admin, invalidar su token*
+    // *4. Si el usuario pierde rol de admin, invalidar su token*
     if (data.roleId === process.env.ADMIN_ROLE_ID && updatedRoleUser.roleId !== process.env.ADMIN_ROLE_ID) await CacheService.invalidateToken(token!);
 
     return ApiResponse.success("Rol de Usuario actualizado con éxito", updatedRoleUser);
