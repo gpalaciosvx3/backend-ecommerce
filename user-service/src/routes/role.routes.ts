@@ -1,29 +1,44 @@
 import { Router } from "express";
+/* Controller */
 import { RoleController } from "../controllers/RoleController";
+/* Middleware */
 import { groupMiddleware } from "../middleware/groupMiddleware";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { cacheMiddleware } from "../middleware/cacheMiddleware";
 import { validateDTO } from "../middleware/dtoValidator";
-import { CreateRoleDTO, UpdateRoleDTO } from "../dtos/RoleDTO";
+/* DTO's */
+import { CreateRoleDTO, UpdateRoleDTO, GetRoleDTO } from "../dtos/RoleDTO";
 
 const router = Router();
 const roleController = new RoleController();
 
 /* 
-* Grupo de middlewares para rutas protegidas (Requiere autenticación)
+* Grupo de middlewares para rutas protegidas 
+*   - Requiere autenticación
 */
 const protectedRouter = Router();
 groupMiddleware([authMiddleware], protectedRouter);
 
-protectedRouter.get("/", roleController.getRoles);
-
+// Registra Rol
 protectedRouter.post("/register", validateDTO(CreateRoleDTO), roleController.createRole);
-
+// Actualizar Rol
 protectedRouter.patch("/:id", validateDTO(UpdateRoleDTO), roleController.updateRole);
-
+// Elimina rol
 protectedRouter.delete("/:id", roleController.deleteRole);
 
+/* 
+* Grupo de middlewares para rutas cacheadas 
+*   - Requiere Autenticación
+*   - Obtiene data de Caché si está disponible
+*/
+const cacheRouter = Router();
+groupMiddleware([authMiddleware,cacheMiddleware], cacheRouter);
+
+// Obtener roles
+cacheRouter.get("/", validateDTO(GetRoleDTO), roleController.getRoles);
+
 /* Montamos las rutas */
-// router.use("/", publicRouter);
 router.use("/", protectedRouter);
+router.use("/", cacheRouter);
 
 export default router;

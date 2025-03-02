@@ -4,23 +4,7 @@ import "winston-daily-rotate-file";
 
 // Formato de Consola
 const consoleFormat = winston.format.printf(({ level, message }) => {
-  const formattedMessage = typeof message === "string" ? message : JSON.stringify(message);
-
-  switch (level) {
-      case "info":
-          console.log(formattedMessage);
-          break;
-      case "warn":
-          console.warn(formattedMessage);
-          break;
-      case "error":
-          console.error(formattedMessage);
-          break;
-      default:
-          console.log(formattedMessage);
-  }
-
-  return formattedMessage; // Ahora siempre es string
+  return `${level.toUpperCase()}: ${typeof message === "string" ? message : JSON.stringify(message)}`;
 });
 
 // Formato de Archivo
@@ -51,16 +35,6 @@ const logger = winston.createLogger({
   ]
 });
 
-// Middleware de logging para Express
-const requestLogger = (req: Request, res: Response, next: NextFunction) => {
-  logger.info({
-        message: "Request received",
-        method: req.method,
-        url: req.url,
-        body: req.body,
-        headers: req.headers
-    });
-    next();
-};
 
-export { logger, requestLogger };
+
+export { logger };

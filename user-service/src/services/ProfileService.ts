@@ -16,26 +16,18 @@ export class ProfileService {
     const cacheKey = username ? `user:${username}` : "user:all";
     const useCache = (req as any).useCache ?? false;
 
-    // **1. Búsqueda en Caché**
-    if (useCache) {
-      const cachedData = await CacheService.getCache(cacheKey);
-      if (cachedData) {
-        logger.info("Datos obtenidos desde caché para id: ", cacheKey);
-        return ApiResponse.success("[CC] Usuarios obtenidos con éxtio", cachedData);
-      } 
-      logger.info("No hay datos en caché, consultando DB...");
-    }
-    
-    // **2. Búsqueda en DB**
-    const users = await this.userRepository.findUser(username)
-  
-    if (!users || (Array.isArray(users) && users.length === 0)) throw new NotFoundError("USR => Perfil no encontrado");
-  
-    // const response = ApiResponse.success("Usuarios obtenidos con éxito", users);
-  
-    if (useCache) await CacheService.setCache(cacheKey, users);
-  
-    return ApiResponse.success("[DB] Usuarios obtenidos con éxito", users);;
+    const { data, fromCache } = await CacheService.getOrSetCache(
+        cacheKey,
+        async () => {
+            return await this.userRepository.findUser(username);
+        },
+        useCache
+    );
+
+    return ApiResponse.success(
+        fromCache ? "[CC] Usuarios obtenidos con éxito" : "Usuarios obtenidos desde DB",
+        data
+    );
   }
 
 }

@@ -1,6 +1,9 @@
+import { Request } from "express";
+import { CacheService } from "../services/CacheService";
 import { RoleRepository } from "../repositories/RoleRepository";
 import { AppError, NotFoundError } from "../middleware/errorHandler";
 import { ApiResponse } from "../utils/ApiResponse";
+import { logger } from "../utils/logger";
 
 export class RoleService {
   private roleRepository = new RoleRepository();
@@ -20,12 +23,24 @@ export class RoleService {
   /* 
   * Obtiene Roles
   */
-  async getRoles() {
-    const rol = await this.roleRepository.getAllRoles();
+  async obtainRole(req: Request) {
+    const name = req.query.name as string | undefined;
+    const cacheKey = name ? `rol:${name}` : "rol:all";
+    const useCache = (req as any).useCache ?? false;
+    console.log('cacheKey: ', cacheKey);
+    
+    const { data, fromCache } = await CacheService.getOrSetCache(
+        cacheKey,
+        async () => {
+            return await this.roleRepository.findRole(name);
+        },
+        useCache
+    );
 
-    // if (!rol || (Array.isArray(rol) && rol.length === 0)) throw new NotFoundError("USR => Perfil no encontrado");
-
-    return ApiResponse.success("Rol encontrado con éxito", rol);
+    return ApiResponse.success(
+        fromCache ? "[CC] Roles obtenidos con éxito" : "Roles obtenidos desde DB",
+        data
+    );
   }
 
   /* 

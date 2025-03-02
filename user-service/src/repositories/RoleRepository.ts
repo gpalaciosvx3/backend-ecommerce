@@ -1,4 +1,5 @@
 import prisma from "../config/db";
+import { Role } from "../models/Role";
 
 export class RoleRepository {
   /**
@@ -11,11 +12,17 @@ export class RoleRepository {
   }
 
   /**
-   * Obtiene todos los Roles
-   * @returns rol creado
+   * Obtener rol
+   * @param name | undefined - Nombre del rol
+   * @returns Lista de roles
    */
-  async getAllRoles() {
-    return prisma.role.findMany();
+  async findRole(name?: string): Promise<Role | Role[] | null> {
+    if (!name) return prisma.role.findMany();
+
+    // Busca un usuario por name
+    return prisma.role.findFirst({
+      where: { name }
+    });
   }
 
   /**

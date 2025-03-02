@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import userRoutes from './routes/user.routes'
 import roleRoutes from "./routes/role.routes";
 import { errorHandler } from './middleware/errorHandler';
-import { requestLogger  } from "./utils/logger";
 
 dotenv.config();
 
@@ -12,9 +11,6 @@ const PORT = process.env.PORT || 4000;
 
 // Middleware para parsear JSON
 app.use(express.json());
-
-// Middleware de logging
-app.use(requestLogger); 
 
 // Habilita las rutas con prefijo "users"
 app.use("/users", userRoutes);

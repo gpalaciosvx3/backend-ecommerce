@@ -6,7 +6,7 @@ config();
 
 const SECRET_KEY = process.env.JWT_SECRET; // Usa variables de entorno
 export class UserController {
-  private userService = new DispatchService();
+  private dispatchService = new DispatchService();
  
   /* 
   * AUTH => Autentificación
@@ -14,7 +14,7 @@ export class UserController {
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username, password } = req.body;
-      const response = await this.userService.authService.login(username, password);
+      const response = await this.dispatchService.authService.login(username, password);
     
       res.json(response);
     } catch (error) {
@@ -25,7 +25,7 @@ export class UserController {
   createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, email, password, username, roleName } = req.body;
-      const user = await this.userService.authService.registerUser(name, email, password, username, roleName);
+      const user = await this.dispatchService.authService.registerUser(name, email, password, username, roleName);
 
       res.status(201).json(user);
     } catch (error) {
@@ -38,7 +38,7 @@ export class UserController {
   */
   getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {          
-      const users = await this.userService.profileService.obtainUser(req);
+      const users = await this.dispatchService.profileService.obtainUser(req);
 
       res.status(201).json(users);
     } catch (error) {
@@ -55,7 +55,7 @@ export class UserController {
       const { username } = req.params;
       const { status } = req.body;
 
-      const response = await this.userService.managementService.statusUser(username, status);
+      const response = await this.dispatchService.managementService.statusUser(username, status);
       res.json(response);
     } catch (error) {
       next(error);

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { RoleService } from "../services/RoleService";
+import { DispatchService } from "../services/DispatchService";
 
 export class RoleController {
-  private roleService = new RoleService();
+  private dispatchService = new DispatchService();
 
   /* 
   * MANG => Manejo de Roles
@@ -10,7 +10,7 @@ export class RoleController {
   createRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name } = req.body;
-      const role = await this.roleService.createRole(name);
+      const role = await this.dispatchService.roleService.createRole(name);
 
       res.status(201).json(role);
     } catch (error) {
@@ -20,9 +20,9 @@ export class RoleController {
 
   getRoles = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const roles = await this.roleService.getRoles();
+      const roles = await this.dispatchService.roleService.obtainRole(req);
 
-      res.json(roles);
+      res.status(201).json(roles);
     } catch (error) {
       next(error);
     }
@@ -32,7 +32,7 @@ export class RoleController {
     try {
       const { id } = req.params;
       const { name } = req.body;
-      const updatedRole = await this.roleService.updateRole(id, name);
+      const updatedRole = await this.dispatchService.roleService.updateRole(id, name);
 
       res.status(201).json(updatedRole);
     } catch (error) {
@@ -43,7 +43,7 @@ export class RoleController {
   deleteRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const deleted = await this.roleService.deleteRole(id);
+      const deleted = await this.dispatchService.roleService.deleteRole(id);
 
       res.json(deleted);
     } catch (error) {
