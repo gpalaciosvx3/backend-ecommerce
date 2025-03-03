@@ -35,6 +35,14 @@ export class AuthService {
     );
   }
 
+  /**
+   * Obtiene el id desde el Token
+   */
+  static getUserDataFromToken(token: string): { userId: string; isAdmin: boolean } | null {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; isAdmin: boolean };
+    return { userId: decoded.userId, isAdmin: decoded.isAdmin };
+  }
+
   /* 
   * Login
   */

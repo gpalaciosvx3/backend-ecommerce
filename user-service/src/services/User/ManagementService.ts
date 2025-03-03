@@ -11,6 +11,7 @@ import { RoleExistsByNameValidation } from "../../validations/RoleExistsByNameVa
 import { ApiResponse } from "../../utils/ApiResponse";
 /* Services */
 import { CacheService } from "../CacheService";
+import { AuthService } from "./AuthService";
 /* MODELS */
 import { AuthData } from "../../models/AuthData";
 import { Role } from "../../models/Role";
@@ -62,8 +63,18 @@ export class ManagementService {
     // *3. Actualiza Usuario Rol*
     const updatedRoleUser = await this.userRepository.updateRole(data.id!, data.role!.roleId);
 
-    // *4. Si el usuario pierde rol de admin, invalidar su token*
-    if (data.roleId === process.env.ADMIN_ROLE_ID && updatedRoleUser.roleId !== process.env.ADMIN_ROLE_ID) await CacheService.invalidateToken(token!);
+    // *4. Extraer userId e isAdmin desde el token*
+    const authenticatedUser = token ? AuthService.getUserDataFromToken(token) : null;
+
+    // *5. Si el usuario pierde el rol de admin y es el mismo usuario autenticado, invalidar su token*
+    if (
+      data.roleId === process.env.ADMIN_ROLE_ID && // Si el usuario antes era admin
+      updatedRoleUser.roleId !== process.env.ADMIN_ROLE_ID && // Ahora ya no es admin
+      authenticatedUser?.userId === updatedRoleUser.id && // Solo si el usuario autenticado cambió su propio rol
+      authenticatedUser?.isAdmin // Y si antes era admin (según el token)
+    ) {
+        await CacheService.invalidateToken(token!);
+    }
 
     return ApiResponse.success("Rol de Usuario actualizado con éxito", updatedRoleUser);
   }
