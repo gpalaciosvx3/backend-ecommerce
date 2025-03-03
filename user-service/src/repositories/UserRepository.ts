@@ -118,11 +118,11 @@ export class UserRepository {
   }
 
   /**
-     * Actualiza el rol de un usuario
-     * @param userId - ID del usuario
-     * @param newRoleId - Nuevo ID del rol
-     * @returns Usuario actualizado
-     */
+   * Actualiza el rol de un usuario
+   * @param userId - ID del usuario
+   * @param newRoleId - Nuevo ID del rol
+   * @returns Usuario actualizado
+   */
   async updateRole(userId: string, newRoleId: string) {
     const updatedUser = await prisma.user.update({
         where: { id: userId },
@@ -148,6 +148,15 @@ export class UserRepository {
     } catch (error) {
         return 0;
     }
-}
+  }
+
+  /**
+   * Obtener usuario por ID
+   * @param roleId RoleId del usuario
+   * @returns Lista de usuarios
+   */
+  async findByRoleId(roleId: string): Promise<User[]> {
+    return prisma.user.findMany({ where: { roleId } });
+  }
 
 }

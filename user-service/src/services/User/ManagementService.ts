@@ -51,7 +51,7 @@ export class ManagementService {
     // *1. Crear cadena de validaciones* 
     const usernameValidation = new UsernameExistsValidation(this.userRepository); // Valida que usuario exista - Existende el user
     const roleValidation = new RoleExistsByNameValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
-    const adminUniqueValidation = new AdminUniqueValidation (this.userRepository);
+    const adminUniqueValidation = new AdminUniqueValidation (this.userRepository); // Valida que usuario no sea el único admin
 
     usernameValidation.setNext(roleValidation);
     roleValidation.setNext(adminUniqueValidation);

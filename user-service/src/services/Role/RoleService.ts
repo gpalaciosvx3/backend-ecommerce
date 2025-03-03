@@ -1,8 +1,12 @@
 import { Request } from "express";
 /* Repositorio */
+import { UserRepository } from "../../repositories/UserRepository";
 import { RoleRepository } from "../../repositories/RoleRepository";
 /* Validations */
 import { RoleNotExistsValidation } from "../../validations/RoleNotExistsValidation";
+import { RoleExistsByNameValidation } from "../../validations/RoleExistsByNameValidation";
+import { UserNotExistsByRoleId } from "../../validations/UserNotExistsByRoleId";
+import { RoleIsNotAdminValidation } from "../../validations/RoleIsNotAdminValidation";
 /* Utils */
 import { ApiResponse } from "../../utils/ApiResponse";
 /* Service */
@@ -11,6 +15,7 @@ import { CacheService } from "../../services/CacheService";
 import { AuthData } from "../../models/AuthData";
 
 export class RoleService {
+  private userRepository = new UserRepository();
   private roleRepository = new RoleRepository();
 
   /* 
@@ -20,7 +25,7 @@ export class RoleService {
     const data: AuthData = { roleName };
 
     // *1. Crear cadena de validaciones* 
-    const roleValidation = new RoleNotExistsValidation(this.roleRepository); // Valida que rol NO exista - Extiende el rol modificado
+    const roleValidation = new RoleNotExistsValidation(this.roleRepository); // Valida que rol NO exista
   
     // *2. Ejecutar validaciones en cadena*
     await roleValidation.validate(data);  
@@ -69,8 +74,13 @@ export class RoleService {
     const data: AuthData = { roleName };
 
     // *1. Crear cadena de validaciones* 
-    const roleValidation = new RoleNotExistsValidation(this.roleRepository); // Valida que rol NO exista - Extiende el rol modificado
+    const roleValidation = new RoleExistsByNameValidation(this.roleRepository); // Valida que rol exista - Extiende el rol modificado
+    const roleAdminValidation = new RoleIsNotAdminValidation(); // Valida que usuario no sea el único admin
+    const roleUserValidation = new UserNotExistsByRoleId(this.userRepository); // Valida que NO exista usuario con el rol a eliminar
   
+    roleValidation.setNext(roleAdminValidation);
+    roleAdminValidation.setNext(roleUserValidation);
+
     // *2. Ejecutar validaciones en cadena*
     await roleValidation.validate(data);  
 
